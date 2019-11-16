@@ -1,0 +1,26 @@
+{
+  "name": "@project-zendstar/mysql-connector",
+  "version": "0.16.0",
+  "description": "",
+  "main": "./src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "publishConfig": { 
+    "registry": "https://npm.pkg.github.com/" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/project-zendstar/mysql-connector.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/project-zendstar/mysql-connector/issues"
+  },
+  "homepage": "https://github.com/project-zendstar/mysql-connector#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.17.1"
+  }
+}
