@@ -1,88 +1,79 @@
-const mysql = require("mysql");
 const Constants = require("./constants");
 
-var tableName;
+function createOne(data, model) {
+  if (!data || Array.isArray(data)) {
+    throw new Error(Constants.SINGLE_PARAM_ERROR);
+  }
 
-function connect() {
-  console.log(`connecting to MySQL host: ${process.env.host}, db name: ${process.env.databaseName}`);
-  var connection = mysql.createConnection({
-    host: process.env.host,
-    user: process.env.username,
-    password: process.env.password,
-    database: process.env.databaseName
-  });
-  return connection;
+  return model
+    .create(data)
+    .then(data => Promise.resolve(data))
+    .catch(err => {
+      return Promise.reject(err);
+    });
 }
 
-module.exports = class MySQLConnector {
-  constructor(table) {
-    if (table) {
-      tableName = table;
-    } else {
-      throw new Error(Constants.TABLENAME_ERROR);
-    }
+function findOne(data, model) {
+  if (!data || Array.isArray(data)) {
+    throw new Error(Constants.SINGLE_PARAM_ERROR);
   }
 
-  createOne(data) {
-    if (!data || Array.isArray(data)) {
-      throw new Error(Constants.SINGLE_PARAM_ERROR);
-    }
-    return new Promise(function(resolve, reject) {
-      let conn = connect();
-      conn.query(`INSERT INTO ${tableName} SET ?`, data, function(error, results, fields) {
-        if (error) {
-          conn.end(() => {
-            console.log("Connection closed from error")
-          });
-          reject(error);
-        }
-        resolve(results);
-        conn.end(() => {
-          console.log("CONNECTION CLOSED from resolve!")
-        });
-      });
-    });
-  }
-
-  findOne(data) {
-    if (!data || Array.isArray(data)) {
-      throw new Error(Constants.SINGLE_PARAM_ERROR);
-    }
-    return new Promise(function(resolve, reject) {
-      let conn = connect();
-      conn.query(`SELECT * FROM ${tableName} WHERE ?`, data, function(error, results, fields) {
-        if (error) {
-          conn.end(() => {
-            console.log("Connection closed from error")
-          });
-          reject(error);
-        }
-        resolve(results);
-        conn.end(() => {
-          console.log("CONNECTION CLOSED from resolve!")
-        });
-      });
-    });
-  }
-
-  deleteOne(data) {
-    if (!data || Array.isArray(data)) {
-      throw new Error(Constants.SINGLE_PARAM_ERROR);
-    }
-    return new Promise(function (resolve, reject) {
-      let conn = connect();
-      conn.query(`DELETE FROM ${tableName} WHERE ?`, data, function(error, results, fields) {
-        if (error) {
-          conn.end(() => {
-            console.log("Connection closed from error")
-          });
-          reject(error);
-        }
-        resolve(results);
-        conn.end(() => {
-          console.log("CONNECTION CLOSED from resolve!")
-        });
-      }); 
+  return model
+    .findOne({ where: data })
+    .then(data => {
+      if (!data) {
+        return Promise.reject();
+      }
+      return Promise.resolve(data);
     })
+    .catch(err => {
+      return Promise.reject(err);
+    });
+}
+
+function deleteOne(data, model) {
+  if (!data || Array.isArray(data)) {
+    return Promise.reject(Constants.SINGLE_PARAM_ERROR);
   }
+
+  return model
+    .destroy({ where: data })
+    .then(data => {
+      if (data == 0) {
+        return Promise.reject();
+      }
+      return Promise.resolve(data);
+    })
+    .catch(err => {
+      return Promise.reject(err);
+    });
+}
+
+function updateOne(id, data, model) {
+  if (!data || Array.isArray(data)) {
+    return Promise.reject(Constants.SINGLE_PARAM_ERROR);
+  }
+  
+  return model
+    .update(data, {
+      where: {
+        id: id
+      }
+    })
+    .then(data => {
+      if (data == 0) {
+        return Promise.reject();
+      }
+      return Promise.resolve(data);
+    })
+    .catch(err => {
+      return Promise.reject(err);
+    });
+}
+
+module.exports = {
+  createOne,
+  findOne,
+  updateOne,
+  deleteOne
 };
