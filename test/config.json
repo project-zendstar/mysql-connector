@@ -1,0 +1,9 @@
+{
+    "dbName": "db",
+    "dbUser": "user",
+    "dbPass": "password",
+    "options": {
+        "omitNull": true,
+        "dialect": "mysql"
+      }
+}
