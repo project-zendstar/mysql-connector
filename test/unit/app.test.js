@@ -13,18 +13,26 @@ describe("src/app", () => {
   const validUser = {
     id: 1,
     personalIdentityNumber: "191010101010",
-    firstname: "Testy",
-    lastname: "McTestface",
-    email: "testy.mctestface.test.tes",
+    firstname: "john",
+    lastname: "doe",
+    email: "john.doe.test.tes",
     isRegistered: 1
   };
 
   const invalidUser = {
     id: 1,
     personalIdentityNumber: "191010101010",
-    firstname: "Testy",
-    lastname: "McTestface",
-    email: "testy.mctestface.test.tes"
+    firstname: "john",
+    lastname: "doe",
+    email: "john.doe.test.tes"
+  };
+
+  const missingUser = {
+    id: 100,
+    personalIdentityNumber: "191010101010",
+    firstname: "john",
+    lastname: "doe",
+    email: "john.doe.test.tes"
   };
 
   const User = {
@@ -44,9 +52,9 @@ describe("src/app", () => {
         message: "User created!",
         result: {
           id: validUser.id,
-          personalIdentityNumber: '191010101010',
-          firstName: 'abdi',
-          lastName: 'liban',
+          personalIdentityNumber: "191010101010",
+          firstName: "john",
+          lastName: "doe",
           isRegistred: 1,
           updatedAt: new Date(),
           createdAt: new Date()
@@ -57,30 +65,29 @@ describe("src/app", () => {
         type: "error",
         message: "Error while creating user!",
         result: {
-            name: "SequelizeValidationError",
-            errors: [
-                {
-                    message: "users.isRegistred cannot be null",
-                    type: "notNull Violation",
-                    path: "isRegistred",
-                    value: null,
-                    origin: "CORE",
-                    instance: {
-                        id: null,
-                        personalIdentityNumber: "191010101010",
-                        firstName: "abdi",
-                        lastName: "liban",
-                        updatedAt: "2019-11-23T17:27:13.306Z",
-                        createdAt: "2019-11-23T17:27:13.306Z"
-                    },
-                    validatorKey: "is_null",
-                    validatorName: null,
-                    validatorArgs: []
-                }
-            ]
+          name: "SequelizeValidationError",
+          errors: [
+            {
+              message: "users.isRegistred cannot be null",
+              type: "notNull Violation",
+              path: "isRegistred",
+              value: null,
+              origin: "CORE",
+              instance: {
+                id: null,
+                personalIdentityNumber: "191010101010",
+                firstName: "john",
+                lastName: "doe",
+                updatedAt: "2019-11-23T17:27:13.306Z",
+                createdAt: "2019-11-23T17:27:13.306Z"
+              },
+              validatorKey: "is_null",
+              validatorName: null,
+              validatorArgs: []
+            }
+          ]
         }
-    });
-
+      });
     });
 
     it("called app.createOne", () => {
@@ -91,8 +98,10 @@ describe("src/app", () => {
     });
 
     it("called app.createOne with invalid argument", () => {
-      expect(() => app.createOne([], mockModels.User)).to.throw("cannot pass an array as a parameter")
-    })
+      expect(() => app.createOne([], mockModels.User)).to.throw(
+        "cannot pass an array as a parameter"
+      );
+    });
 
     it("called app.createOne with missing required field", () => {
       return app.createOne(invalidUser, mockModels.User).catch(res => {
@@ -103,7 +112,7 @@ describe("src/app", () => {
 
   context("user exists", () => {
     before(async () => {
-      User.findOne.resolves({
+      User.findOne.withArgs({ where: { id: validUser.id } }).resolves({
         type: "success",
         message: "User data extracted!",
         result: {
@@ -116,18 +125,28 @@ describe("src/app", () => {
           createdAt: new Date()
         }
       });
+
+      User.findOne.withArgs({ where: { id: missingUser.id } }).resolves(0);
     });
 
     it("called app.findOne", () => {
-      return app.findOne(validUser, mockModels.User).then(res => {
+      return app.findOne({ id: validUser.id }, mockModels.User).then(res => {
         expect(res).to.be.ok;
         expect(res.message).to.equal("User data extracted!");
       });
     });
 
-    it("called app.createOne with invalid argument", () => {
-      expect(() => app.findOne([], mockModels.User)).to.throw("cannot pass an array as a parameter")
-    })
+    it("called app.findOne with invalid argument", () => {
+      expect(() => app.findOne([], mockModels.User)).to.throw(
+        "cannot pass an array as a parameter"
+      );
+    });
+
+    it("called app.findOne with a user that does not exist", () => {
+      return app.findOne({ id: missingUser.id }, mockModels.User).catch(res => {
+        expect(parseInt(res.message)).to.equal(0);
+      });
+    });
   });
 
   context("user update", () => {

@@ -22,7 +22,7 @@ function findOne(data, model) {
     .findOne({ where: data })
     .then(data => {
       if (!data) {
-        return Promise.reject();
+        throw new Error(data);
       }
       return Promise.resolve(data);
     })
@@ -40,7 +40,7 @@ function deleteOne(data, model) {
     .destroy({ where: data })
     .then(data => {
       if (data == 0) {
-        return Promise.reject();
+        throw new Error(data)
       }
       return Promise.resolve(data);
     })
@@ -62,7 +62,7 @@ function updateOne(id, data, model) {
     })
     .then(data => {
       if (data == 0) {
-        return Promise.reject();
+        throw new Error(data)
       }
       return Promise.resolve(data);
     })
