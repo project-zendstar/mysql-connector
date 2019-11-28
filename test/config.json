@@ -1,6 +1,6 @@
 {
-    "dbName": "db",
-    "dbUser": "user",
+    "dbName": "user_service_development",
+    "dbUser": "root",
     "dbPass": "password",
     "options": {
         "omitNull": true,
