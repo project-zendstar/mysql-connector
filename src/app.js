@@ -22,7 +22,7 @@ function findOne(data, model) {
     .findOne({ where: data })
     .then(data => {
       if (!data) {
-        throw new Error(data);
+      return Promise.reject(data)
       }
       return Promise.resolve(data);
     })
@@ -40,7 +40,7 @@ function deleteOne(data, model) {
     .destroy({ where: data })
     .then(data => {
       if (data == 0) {
-        throw new Error(data)
+        return Promise.reject(data);
       }
       return Promise.resolve(data);
     })
@@ -62,7 +62,7 @@ function updateOne(id, data, model) {
     })
     .then(data => {
       if (data == 0) {
-        throw new Error(data)
+        return Promise.reject(data);
       }
       return Promise.resolve(data);
     })
@@ -71,7 +71,7 @@ function updateOne(id, data, model) {
     });
 }
 
-function updateOneAndGet(id, data, model) {
+function updateOneAndFind(id, data, model) {
   if (!data || Array.isArray(data)) {
     return Promise.reject(Constants.SINGLE_PARAM_ERROR);
   }
@@ -84,7 +84,7 @@ function updateOneAndGet(id, data, model) {
     })
     .then(data => {
       if (data == 0) {
-        throw new Error(data)
+        return Promise.reject(data);
       }
       return model.findOne({ where: {id: id} }).then((data) => {
         return Promise.resolve(data);
@@ -100,5 +100,5 @@ module.exports = {
   findOne,
   updateOne,
   deleteOne,
-  updateOneAndGet
+  updateOneAndFind
 };
