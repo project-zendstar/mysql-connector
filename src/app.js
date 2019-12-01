@@ -31,6 +31,20 @@ function findOne(data, model) {
     });
 }
 
+function findAll(data, model) {
+  return model
+    .findAll({ where: data })
+    .then(data => {
+      if (!data) {
+      return Promise.reject(data)
+      }
+      return Promise.resolve(data);
+    })
+    .catch(err => {
+      return Promise.reject(err);
+    });
+}
+
 function deleteOne(data, model) {
   if (!data || Array.isArray(data)) {
     return Promise.reject(Constants.SINGLE_PARAM_ERROR);
@@ -95,6 +109,7 @@ function updateOneAndFind(id, data, model) {
 module.exports = {
   createOne,
   findOne,
+  findAll,
   updateOne,
   deleteOne,
   updateOneAndFind
