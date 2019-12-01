@@ -82,10 +82,7 @@ function updateOneAndFind(id, data, model) {
         id: id
       }
     })
-    .then(data => {
-      if (data == 0) {
-        return Promise.reject(data);
-      }
+    .then(() => {
       return model.findOne({ where: {id: id} }).then((data) => {
         return Promise.resolve(data);
       })
