@@ -13,16 +13,23 @@ function createOne(data, model) {
     });
 }
 
-function findOne(data, model) {
+function findOne(data, model, optionalArg = null) {
   if (!data || Array.isArray(data)) {
     throw new Error(Constants.SINGLE_PARAM_ERROR);
   }
 
   return model
-    .findOne({ where: data })
+    .findOne({
+      where: data,
+      include: [
+        {
+          model: optionalArg
+        }
+      ]
+    })
     .then(data => {
       if (!data) {
-      return Promise.reject(data)
+        return Promise.reject(data);
       }
       return Promise.resolve(data);
     })
@@ -31,12 +38,19 @@ function findOne(data, model) {
     });
 }
 
-function findAll(data, model) {
+function findAll(data, model, optionalArg = null) {
   return model
-    .findAll({ where: data })
+    .findAll({
+      where: data,
+      include: [
+        {
+          model: optionalArg
+        }
+      ]
+    })
     .then(data => {
       if (!data) {
-      return Promise.reject(data)
+        return Promise.reject(data);
       }
       return Promise.resolve(data);
     })
@@ -67,7 +81,7 @@ function updateOne(id, data, model) {
   if (!data || Array.isArray(data)) {
     return Promise.reject(Constants.SINGLE_PARAM_ERROR);
   }
-  
+
   return model
     .update(data, {
       where: {
@@ -85,11 +99,11 @@ function updateOne(id, data, model) {
     });
 }
 
-function updateOneAndFind(id, data, model) {
+function updateOneAndFind(id, data, model, optionalArg = null) {
   if (!data || Array.isArray(data)) {
     return Promise.reject(Constants.SINGLE_PARAM_ERROR);
   }
-  
+
   return model
     .update(data, {
       where: {
@@ -97,9 +111,16 @@ function updateOneAndFind(id, data, model) {
       }
     })
     .then(() => {
-      return model.findOne({ where: {id: id} }).then((data) => {
+      return model.findOne({
+        where: { id: id},
+        include: [
+          {
+            model: optionalArg
+          }
+        ]
+      }).then(data => {
         return Promise.resolve(data);
-      })
+      });
     })
     .catch(err => {
       return Promise.reject(err);
