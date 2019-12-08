@@ -21,11 +21,7 @@ function findOne(data, model, optionalArg = null) {
   return model
     .findOne({
       where: data,
-      include: [
-        {
-          model: optionalArg
-        }
-      ]
+      include: optionalArg
     })
     .then(data => {
       if (!data) {
@@ -42,11 +38,7 @@ function findAll(data, model, optionalArg = null) {
   return model
     .findAll({
       where: data,
-      include: [
-        {
-          model: optionalArg
-        }
-      ]
+      include: optionalArg
     })
     .then(data => {
       if (!data) {
@@ -113,11 +105,7 @@ function updateOneAndFind(id, data, model, optionalArg = null) {
     .then(() => {
       return model.findOne({
         where: { id: id},
-        include: [
-          {
-            model: optionalArg
-          }
-        ]
+        include: optionalArg
       }).then(data => {
         return Promise.resolve(data);
       });
