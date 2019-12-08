@@ -69,6 +69,24 @@ function deleteOne(data, model) {
     });
 }
 
+function deleteMany(data, model) {
+  if (!data || Array.isArray(data)) {
+    return Promise.reject(Constants.SINGLE_PARAM_ERROR);
+  }
+
+  return model
+    .destroy({ where: data })
+    .then(data => {
+      if (data == 0) {
+        return Promise.reject(data);
+      }
+      return Promise.resolve(data);
+    })
+    .catch(err => {
+      return Promise.reject(err);
+    });
+}
+
 function updateOne(id, data, model) {
   if (!data || Array.isArray(data)) {
     return Promise.reject(Constants.SINGLE_PARAM_ERROR);
@@ -121,5 +139,6 @@ module.exports = {
   findAll,
   updateOne,
   deleteOne,
-  updateOneAndFind
+  updateOneAndFind,
+  deleteMany
 };
