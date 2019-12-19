@@ -1,6 +1,6 @@
 {
   "name": "@project-zendstar/mysql-connector",
-  "version": "0.33.0",
+  "version": "0.1.0",
   "description": "",
   "main": "./src/app.js",
   "scripts": {
@@ -8,9 +8,6 @@
     "test:unit": "NODE_ENV=test mocha ./test/unit/ --recursive",
     "test:unit:cov": "NODE_ENV=test nyc mocha ./test/unit/ --recursive",
     "test:mutants": "NODE_ENV=test npx stryker run"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
   },
   "repository": {
     "type": "git",
