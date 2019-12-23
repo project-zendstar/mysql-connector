@@ -59,9 +59,6 @@ function deleteOne(data, model) {
   return model
     .destroy({ where: data })
     .then(data => {
-      if (data == 0) {
-        return Promise.reject(data);
-      }
       return Promise.resolve(data);
     })
     .catch(err => {
@@ -77,9 +74,6 @@ function deleteMany(data, model) {
   return model
     .destroy({ where: data })
     .then(data => {
-      if (data == 0) {
-        return Promise.reject(data);
-      }
       return Promise.resolve(data);
     })
     .catch(err => {
@@ -99,9 +93,6 @@ function updateOne(id, data, model) {
       }
     })
     .then(data => {
-      if (data == 0) {
-        return Promise.reject(data);
-      }
       return Promise.resolve(data);
     })
     .catch(err => {
